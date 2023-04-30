@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum:['admin','user','tailor']
+        enum:['admin','customer','tailor']
     },
     email: {
         type: String,

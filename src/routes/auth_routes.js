@@ -4,11 +4,21 @@ const routes = express.Router();
 import {
     userSignup,
     userLogin,
+    userUpdate,
+    userGet,
 } from "../controllers/auth_controller.js"
+import { upload } from "../middleware/pic_upload.js";
+import { protect } from "../middleware/user_middleware.js";
+import { uploadPicture } from "../controllers/upload_pic.js";
 
-routes.post('/user_signup', userSignup)
-
+routes.post('/user_signup',upload.single("pic"), userSignup)
+routes.put('/user_update/:_id',protect, userUpdate)
+routes.get('/user_get',protect, userGet)
 routes.post('/user_login', userLogin)
+
+// picture upload 
+
+routes.post('/picture_upload',protect,upload.single("pic"), uploadPicture)
 
 
 

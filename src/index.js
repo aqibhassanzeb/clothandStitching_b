@@ -6,6 +6,8 @@ import cors from 'cors';
 import './config.js';
 import Auth from "./routes/auth_routes.js";
 import Cloths from "./routes/cloths_routes.js";
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 dotenv.config();
@@ -18,7 +20,8 @@ app.use(cors({
     defaultErrorHandler: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //All APi's Endponits
 app.use('/api/v1', Auth,Cloths)
