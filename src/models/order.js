@@ -6,10 +6,12 @@ const Order = new mongoose.Schema({
     },
     phone:{
         type:String,
-        required:true
     },
     address:{
         type:String,
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId, ref: "user",
         required:true
     },
     product:{
@@ -17,15 +19,26 @@ const Order = new mongoose.Schema({
     },
     size:{
         type:String,
-        required:true
     },
     total_price:{
+        type:Number,
+        required:true
+    },
+    quantity:{
         type:Number,
         required:true
     },
     order_type:{
         type:String,
         required:true
+    },
+    payment_status:{
+        type:String,
+        default:"pending"
+    },
+    delivery_status:{
+        type:String,
+        default:"pending"
     },
     un_stitched:{
         type:mongoose.Schema.Types.ObjectId, ref: "unstitchedOrder"

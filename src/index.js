@@ -6,6 +6,7 @@ import cors from 'cors';
 import './config.js';
 import Auth from "./routes/auth_routes.js";
 import Cloths from "./routes/cloths_routes.js";
+import Order from "./routes/order_routes.js";
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -24,7 +25,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //All APi's Endponits
-app.use('/api/v1', Auth,Cloths)
+app.use('/api/v1', Auth,Cloths,Order)
 
 app.use('*', (req, res) => {
     return res.status(404).json({
