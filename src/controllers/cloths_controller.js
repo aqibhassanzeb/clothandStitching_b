@@ -38,7 +38,7 @@ export const clothBrands_Update = async(req, res) => {
      
 }
 export const clothBrands_Get = async(req, res) => {
-    let filter = {}
+    let filter = {isActive:true}
     if (req.query._id) {
         filter = { _id: req.query._id.split(','),isActive:true }
     }
@@ -91,18 +91,19 @@ export const cloth_create = (req, res) => {
 }
 
 export const cloth_Get = async(req, res) => {
-    let filter = {}
+    let filter = {isActive:true}
     if (req.query._id) {
-        filter = { _id: req.query._id.split(','),isActive:true }
+        filter._id =   req.query._id.split(',') 
     }
     if (req.query.brand) {
-        filter = { brand: req.query.brand.split(','),isActive:true }
+        filter.brand =  req.query.brand.split(',') 
     }
     if (req.query.cloth_type) {
-        filter = { cloth_type: req.query.cloth_type,isActive:true }
+        filter.cloth_type= req.query.cloth_type 
     }
     if (req.query.gender) {
-        filter = { gender: req.query.gender,isActive:true }
+        filter.gender=req.query.gender 
+
     }
         try {
             const result= await cloths.find(filter).populate("brand")

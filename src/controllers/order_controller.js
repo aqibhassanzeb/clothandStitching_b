@@ -32,27 +32,31 @@ export const order_Create = async(req, res) => {
 }
 
 export const order_Get = async(req, res) => {
-    let filter = {}
+    let filter = {isActive:true}
     if (req.query._id) {
-        filter = { _id: req.query._id.split(','),isActive:true }
+        filter._id=req.query._id.split(',') 
     }
     if (req.query.user) {
-        filter = { user: req.query.user.split(','),isActive:true }
+        filter.user=req.query.user.split(',') 
     }
     if (req.query.product) {
-        filter = { product: req.query.product.split(','),isActive:true }
+        filter.product =req.query.product.split(',') 
     }
     if (req.query.payment_status) {
-        filter = { payment_status: req.query.payment_status,isActive:true }
+        filter.payment_status=req.query.payment_status 
     }
     if (req.query.delivery_status) {
-        filter = { delivery_status: req.query.delivery_status,isActive:true }
+        filter.delivery_status=req.query.delivery_status 
     }
     if (req.query.un_stitched) {
-        filter = { un_stitched: req.query.un_stitched.split(','),isActive:true }
+        filter.un_stitched=req.query.un_stitched.split(',')
+    }
+    if (req.query.assign_tailor) {
+        filter.assign_tailor=req.query.assign_tailor.split(',')
     }
         try {
-            const result= await order.find(filter).populate("un_stitched").populate("product").populate({ path: 'user', select: '-password' });
+            const result= await order.find(filter).populate("un_stitched").populate("product").populate({ path: 'user', select: '-password' })
+            .populate({ path: 'assign_tailor', select: '-password' });
                res.json({data:result})
         } catch (error) {
                res.status(400).json({ error: "something went wrong!" })

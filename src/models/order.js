@@ -40,6 +40,9 @@ const Order = new mongoose.Schema({
         type:String,
         default:"pending"
     },
+    assign_tailor:{
+        type:mongoose.Schema.Types.ObjectId, ref: "user", 
+    },
     un_stitched:{
         type:mongoose.Schema.Types.ObjectId, ref: "unstitchedOrder"
     },
