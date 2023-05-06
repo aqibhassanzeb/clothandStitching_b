@@ -9,6 +9,7 @@ export const order_Create = async(req, res) => {
     if(req.file){
      picture=req.file.filename
     }
+    // return console.log("picture :",req.file,"req body :",req.body)
     if (!name || !total_price || !order_type || !user) {
         return res.status(422).json({ error: "please fill the fields " })
     }

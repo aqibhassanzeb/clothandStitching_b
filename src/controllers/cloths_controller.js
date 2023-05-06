@@ -68,7 +68,10 @@ export const clothBrands_Delete = async(req, res) => {
 
 export const cloth_create = (req, res) => {
     const {name,brand,size,color,price,gender,cloth_type} = req.body
-    let picture=req.file.filename
+    let picture
+    if(req.file.filename){
+         picture=req.file.filename
+    }
     if (!name || !brand || !size || !color || !price || !gender || !cloth_type ) {
         return res.status(422).json({ error: "please fill the name " })
     }
@@ -103,11 +106,25 @@ export const cloth_Get = async(req, res) => {
     }
     if (req.query.gender) {
         filter.gender=req.query.gender 
-
     }
         try {
+            const { page = 1, pageSize = 3, sort = null,search='' } = req.query;
+            const generateSort = () => {
+              const sortParsed = JSON.parse(sort);
+              const sortFormatted = {
+                [sortParsed.field]: (sortParsed.sort = 'asc' ? 1 : -1),
+              };
+              return sortFormatted;
+            };
+            const sortFormatted = Boolean(sort) ? generateSort() : {};
+
             const result= await cloths.find(filter).populate("brand")
-               res.json({data:result})
+            .sort(sortFormatted)
+      .skip((page-1) * pageSize)
+      .limit(pageSize);
+
+    const total = await cloths.countDocuments(filter);
+               res.json({data:result,total})
         } catch (error) {
                res.status(400).json({ error: "something went wrong!" })
             

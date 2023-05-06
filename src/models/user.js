@@ -36,6 +36,8 @@ const UserSchema = new mongoose.Schema({
     email_verified:{
         type:Boolean,
         default:false
-    }
+    },
+    resetToken: String,
+    expireToken: Date,
 },{ timestamps: true })
 export  const User = mongoose.model('user', UserSchema)
