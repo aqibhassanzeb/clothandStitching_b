@@ -7,6 +7,9 @@ const UserSchema = new mongoose.Schema({
     image:{
         type:String
     },
+    gallary_images:{
+        type:[]
+    },
     brand:{
         type:mongoose.Schema.Types.ObjectId, ref: "clothbrand"
     },

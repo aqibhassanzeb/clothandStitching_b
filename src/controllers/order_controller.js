@@ -1,5 +1,7 @@
+import { notification } from "../models/notification.js"
 import { order } from "../models/order.js"
 import { unstitchedOrder } from "../models/unstitched_order.js"
+import { User } from "../models/user.js"
 
 
 
@@ -13,6 +15,10 @@ export const order_Create = async(req, res) => {
     if (!name || !total_price || !order_type || !user) {
         return res.status(422).json({ error: "please fill the fields " })
     }
+    let title
+    let titlehelp="order placed"
+    title= order_type + titlehelp
+
    try {
     
        const unsOrder = new unstitchedOrder({...req.body,image:picture})
@@ -20,7 +26,10 @@ export const order_Create = async(req, res) => {
     if(unsOrderSaved){
        let un_stitched = unsOrderSaved._id
        const sOrder=new order({...req.body,un_stitched})
+       const notifi=new notification({title,createdby:user,...req.body})
        await sOrder.save()
+       await notifi.save()
+       
        res.status(200).json({success:true, message: "submitted successfully" })
     }else{
         res.status(422).json({ message: 'something went wrong!' })
@@ -94,3 +103,66 @@ export const order_Delete = async(req, res) => {
         }
      
 }
+
+                                                        // notification section 
+
+
+export const notification_Get = async(req, res) => {
+    let filter = {isActive:true}
+    if (req.query._id) {
+        filter._id=req.query._id.split(',') 
+    }
+    if (req.query.createdby) {
+        filter.createdby=req.query.createdby.split(',') 
+    }
+    if (req.query.product) {
+        filter.product =req.query.product.split(',') 
+    }
+    if (req.query.un_stitched) {
+        filter.un_stitched=req.query.un_stitched.split(',')
+    }
+    if (req.query.assign_tailor) {
+        filter.assign_tailor=req.query.assign_tailor.split(',')
+    }
+        try {
+            const result= await notification.find(filter).populate("un_stitched").populate("product").populate({ path: 'createdby', select: '-password' })
+            .populate({ path: 'assign_tailor', select: '-password' });
+               res.json({data:result})
+        } catch (error) {
+               res.status(400).json({ error: "something went wrong!" })
+            
+        }
+  
+    }
+
+
+    export const notification_Update = async(req, res) => {
+        const {_id} = req.params
+            try {
+                await notification.findByIdAndUpdate({_id },req.body)
+                   res.json({ message: "updated successfully" })
+            } catch (error) {
+                   res.status(400).json({ error: "something went wrong!" })   
+            }
+         
+    }
+
+    export const notificationUpdate_Read = async(req, res) => {
+        const { userId } = req.params;
+
+        let admin=false
+            try {
+            let user=  await User.findById({_id:userId})
+            let filter = { readby: { $ne: userId } };
+            
+            if(user.status !="admin") {
+              filter["$or"] = [{ assign_tailor: userId }, { createdby:userId }];
+            } 
+
+                await notification.updateMany( filter, { $push: { readby: userId } });
+                   res.json({message: "All messages marked as read successfully" })
+            } catch (error) {
+                   res.status(400).json({ error: "something went wrong!" })   
+            }
+         
+    }

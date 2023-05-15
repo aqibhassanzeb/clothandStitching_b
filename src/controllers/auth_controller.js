@@ -6,7 +6,7 @@ import { sendMail } from "../middleware/email_send.js";
 
 export const userSignup = (req, res) => {
   const { status, email, password, name } = req.body;
-  let image = req.file.filename;
+  let image = req.file?.filename;
   if (!status || !email || !password || !name) {
     return res.status(422).json({ error: "please fill all fields " });
   }
