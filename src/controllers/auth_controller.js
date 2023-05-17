@@ -53,7 +53,6 @@ export const userLogin = (req, res) => {
             { _id: savedUser._id },
             process.env.JWT_SECRET
           );
-          console.log("savedUser ;", savedUser);
           savedUser.password = undefined;
           res.json({ message: "Successfull Login", token, user: savedUser });
         } else {
@@ -69,9 +68,16 @@ export const userLogin = (req, res) => {
 
 export const userUpdate = async (req, res) => {
   const { _id } = req.params;
-
+  const {password}=req.body
+  let passwordUpdate=false
+  let newPassword
+  if(password){
+  passwordUpdate=true
+  newPassword=await bycrypt.hash(password, 12)
+  }
   try {
-    await User.findByIdAndUpdate({ _id }, req.body);
+    const updateData = passwordUpdate ? { ...req.body, password: newPassword } : req.body;
+    await User.findByIdAndUpdate(_id, updateData);
     res.json({ message: "updated successfully" });
   } catch (error) {
     res.status(400).json({ error: "something went wrong!" });

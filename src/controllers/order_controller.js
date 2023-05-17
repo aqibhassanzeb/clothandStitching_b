@@ -17,7 +17,7 @@ export const order_Create = async(req, res) => {
     }
     let title
     let titlehelp="order placed"
-    title= order_type + titlehelp
+    title= order_type + " " + titlehelp;
 
    try {
     
