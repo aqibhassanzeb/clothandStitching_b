@@ -21,6 +21,9 @@ const Notification = new mongoose.Schema({
     un_stitched:{
         type:mongoose.Schema.Types.ObjectId, ref: "unstitchedOrder"
     },
+    order_id:{
+        type:mongoose.Schema.Types.ObjectId, ref: "order"
+    },
     readby:{
         type:[]
     },

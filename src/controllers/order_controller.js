@@ -11,7 +11,6 @@ export const order_Create = async(req, res) => {
     if(req.file){
      picture=req.file.filename
     }
-    // return console.log("picture :",req.file,"req body :",req.body)
     if (!name || !total_price || !order_type || !user) {
         return res.status(422).json({ error: "please fill the fields " })
     }
@@ -26,8 +25,8 @@ export const order_Create = async(req, res) => {
     if(unsOrderSaved){
        let un_stitched = unsOrderSaved._id
        const sOrder=new order({...req.body,un_stitched})
-       const notifi=new notification({title,createdby:user,...req.body})
-       await sOrder.save()
+       let saveOrder=  await sOrder.save()
+       const notifi=new notification({title,order_id:saveOrder._id,createdby:user,...req.body})
        await notifi.save()
        
        res.status(200).json({success:true, message: "submitted successfully" })
@@ -83,6 +82,23 @@ export const order_Update = async(req, res) => {
             await unstitchedOrder.findByIdAndUpdate({_id:unStitchedId},req.body)
             await order.findByIdAndUpdate({_id },req.body)
                res.json({ message: "updated successfully" })
+        } catch (error) {
+               res.status(400).json({ error: "something went wrong!" })   
+        }
+     
+}
+export const order_UpdatebyTailor = async(req, res) => {
+    const {_id} = req.params
+    const {assign_tailor}=req.body
+    if(!assign_tailor){
+        return res.status(422).json({ error: "tailor is required " })
+    }
+        try {
+            let getOrder= await order.findById({_id })
+            let result =  await notification.findOneAndUpdate({order_id:getOrder._id},{assign_tailor})
+            
+            await order.findByIdAndUpdate({_id },{assign_tailor})
+               res.json({ message: "Assign Tailor Successfully" })
         } catch (error) {
                res.status(400).json({ error: "something went wrong!" })   
         }
